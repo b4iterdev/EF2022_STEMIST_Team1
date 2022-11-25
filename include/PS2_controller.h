@@ -1,7 +1,4 @@
-//#include "motors.h"
 #include <PS2X_lib.h>
-#include <motor.h>
-#include <L298NX2.h>
 
 PS2X ps2x; // create PS2 Controller Class
 
@@ -37,15 +34,87 @@ bool PS2control()
 {
   // Based on IgorF2's Arduino Bot:https://www.instructables.com/Arduino-Robot-With-PS2-Controller-PlayStation-2-Jo/
 
-  int nJoyL = ps2x.Analog(PSS_LY); // read left stick      
-  int nJoyR = ps2x.Analog(PSS_RY); // read right stick             
-
-
-  if (nJoyL > 127)
-  {
-    motors.forward();
-    int calSpeed1 = abs(255-nJoyL);
-    motors.setSpeed(nJoyL);
-  }
+    int nJoyX = ps2x.Analog(PSS_RX); // read x-joystick
+    int nJoyY = ps2x.Analog(PSS_LY); // read y-joystick
+    
   
+    nJoyX = map(nJoyX, 0, 255, -1023, 1023);
+    nJoyY = map(nJoyY, 0, 255, 1023, -1023);
+  
+    // OUTPUTS
+    int nMotMixL; // Motor (left) mixed output
+    int nMotMixR; // Motor (right) mixed output
+  
+    // CONFIG
+    // - fPivYLimt  : The threshold at which the pivot action starts
+    //                This threshold is measured in units on the Y-axis
+    //                away from the X-axis (Y=0). A greater value will assign
+    //                more of the joystick's range to pivot actions.
+    //                Allowable range: (0..+127)
+    float fPivYLimit = 1023.0;
+        
+    // TEMP VARIABLES
+    float   nMotPremixL;    // Motor (left) premixed output
+    float   nMotPremixR;    // Motor (right) premixed output
+    int     nPivSpeed;      // Pivot Speed
+    float   fPivScale;      // Balance scale between drive and pivot
+  
+    // Calculate Drive Turn output due to Joystick X input
+    if (nJoyY >= 0) {
+      // Forward
+      nMotPremixL = (nJoyX>=0)? 1023.0 : (1023.0 + nJoyX);
+      nMotPremixR = (nJoyX>=0)? (1023.0 - nJoyX) : 1023.0;
+    } else {
+      // Reverse
+      nMotPremixL = (nJoyX>=0)? (1023.0 - nJoyX) : 1023.0;
+      nMotPremixR = (nJoyX>=0)? 1023.0 : (1023.0 + nJoyX);
+    }
+  
+    // Scale Drive output due to Joystick Y input (throttle)
+    nMotPremixL = nMotPremixL * nJoyY/1023.0;
+    nMotPremixR = nMotPremixR * nJoyY/1023.0;
+  
+    // Now calculate pivot amount
+    // - Strength of pivot (nPivSpeed) based on Joystick X input
+    // - Blending of pivot vs drive (fPivScale) based on Joystick Y input
+    nPivSpeed = nJoyX;
+    fPivScale = (abs(nJoyY)>fPivYLimit)? 0.0 : (1.0 - abs(nJoyY)/fPivYLimit);
+  
+    // Calculate final mix of Drive and Pivot
+    nMotMixL = (1.0-fPivScale)*nMotPremixL + fPivScale*( nPivSpeed);
+    nMotMixR = (1.0-fPivScale)*nMotPremixR + fPivScale*(-nPivSpeed);
+    
+    motor_left_speed = nMotMixL;
+    motor_right_speed = nMotMixR;
+  
+    if (motor_right_speed > 50) {
+      digitalWrite(IN1_B,HIGH);
+      digitalWrite(IN2_B,LOW);
+    }
+    else if (motor_right_speed < -50) {
+      digitalWrite(IN1_B,LOW);
+      digitalWrite(IN2_B, HIGH);
+    }
+    else {
+      digitalWrite(IN1_B, LOW);
+      digitalWrite(IN2_B, LOW);
+    }
+  
+    if (motor_left_speed > 50) {
+      digitalWrite(IN1_A, LOW);
+      digitalWrite(IN2_A, HIGH);
+    }
+    else if (motor_left_speed < -50) {
+      digitalWrite(IN1_A,HIGH);
+      digitalWrite(IN2_A,LOW);
+    }
+    else {
+      digitalWrite(IN1_A, LOW);
+      digitalWrite(IN2_A, LOW);
+    }
+    analogWrite(EN_A, abs(motor_left_speed));
+    analogWrite(EN_B, abs(motor_right_speed));
+    if (abs(motor_left_speed > 50) || abs(motor_left_speed > 50)) {
+      Serial.println("Moving!");
+    }
 }
