@@ -1,12 +1,13 @@
 #include <PS2X_lib.h>
 
-const unsigned int EN_A = 3;
-const unsigned int IN1_A = 5;
-const unsigned int IN2_A = 6;
+//Set pinout to your own, but ENABLE Pin MUST be PWM pin.
+#define EN_A 3
+#define IN1_A 5
+#define IN2_A 6
 
-const unsigned int IN1_B = 7;
-const unsigned int IN2_B = 8;
-const unsigned int EN_B = 9;
+#define IN1_B 7
+#define IN2_B 8
+#define EN_B 9
 
 PS2X ps2x; // create PS2 Controller Class
 
@@ -42,7 +43,6 @@ void setupPS2controller()
 }
 void PS2control()
 {
-  // Based on IgorF2's Arduino Bot:https://www.instructables.com/Arduino-Robot-With-PS2-Controller-PlayStation-2-Jo/
     ps2x.read_gamepad(false,0);
 
     int nJoyX = ps2x.Analog(PSS_RX); // read x-joystick
