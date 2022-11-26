@@ -125,6 +125,6 @@ void PS2control()
     analogWrite(EN_A, abs(motor_left_speed));
     analogWrite(EN_B, abs(motor_right_speed));
     if (abs(motor_left_speed > 50) || abs(motor_left_speed > 50)) {
-      Serial.println("Moving!");
     }
+    delay(50);
 }
