@@ -1,5 +1,13 @@
 #include <PS2X_lib.h>
 
+const unsigned int EN_A = 3;
+const unsigned int IN1_A = 5;
+const unsigned int IN2_A = 6;
+
+const unsigned int IN1_B = 7;
+const unsigned int IN2_B = 8;
+const unsigned int EN_B = 9;
+
 PS2X ps2x; // create PS2 Controller Class
 
 /******************************************************************
@@ -24,20 +32,22 @@ PS2X ps2x; // create PS2 Controller Class
 //#define rumble      true
 #define rumble      false
 
+int motor_right_speed = 0;
+int motor_left_speed = 0;
+
 void setupPS2controller()
 {
   ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, true, true);
-  ps2x.readType();
   //  ps2x.read_gamepad(false, 0); // disable vibration of the controller
 }
-bool PS2control()
+void PS2control()
 {
   // Based on IgorF2's Arduino Bot:https://www.instructables.com/Arduino-Robot-With-PS2-Controller-PlayStation-2-Jo/
+    ps2x.read_gamepad(false,0);
 
     int nJoyX = ps2x.Analog(PSS_RX); // read x-joystick
     int nJoyY = ps2x.Analog(PSS_LY); // read y-joystick
     
-  
     nJoyX = map(nJoyX, 0, 255, -1023, 1023);
     nJoyY = map(nJoyY, 0, 255, 1023, -1023);
   
