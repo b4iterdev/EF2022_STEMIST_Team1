@@ -133,13 +133,9 @@ void motorControl() {
   {
     digitalWrite(A0,1);
     digitalWrite(A1,0);
-    Serial.print("Motor3 on");
-    Serial.print(digitalRead(A0));
-    Serial.print(digitalRead(A1));
   } if (ps2x.ButtonReleased(PSB_CROSS))
   {
     digitalWrite(A0,0);
     digitalWrite(A1,0);
-    Serial.print("Motor3 off");
   }
 }

@@ -10,6 +10,5 @@ void setup(){
 void loop() {
   PS2control();
   motorControl();
-  Serial.print("ABC");
 }
  
