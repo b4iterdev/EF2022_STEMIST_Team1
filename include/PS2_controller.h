@@ -129,13 +129,24 @@ void PS2control()
     delay(50);
 }
 void motorControl() {
-  if (ps2x.ButtonPressed(PSB_CROSS))
+  if (ps2x.ButtonPressed(PSB_L1))
   {
     digitalWrite(A0,1);
     digitalWrite(A1,0);
-  } if (ps2x.ButtonReleased(PSB_CROSS))
+  } 
+  if (ps2x.ButtonReleased(PSB_L1))
   {
     digitalWrite(A0,0);
     digitalWrite(A1,0);
   }
-}
+  if (ps2x.ButtonPressed(PSB_R1))
+  {
+    digitalWrite(A1,1);
+    digitalWrite(A0,0);
+  } 
+  if (ps2x.ButtonReleased(PSB_R1))
+  {
+    digitalWrite(A1,0);
+    digitalWrite(A0,0);
+  }
+}  
