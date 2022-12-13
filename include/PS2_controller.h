@@ -129,6 +129,24 @@ void PS2control()
     delay(50);
 }
 void motorControl() {
+  // Increase/Decrease Level
+  if (ps2x.ButtonPressed(PSB_PAD_UP)) {
+    digitalWrite(A2,1);
+    digitalWrite(A3,0);
+  }
+  if (ps2x.ButtonReleased(PSB_PAD_UP)){
+    digitalWrite(A2,0);
+    digitalWrite(A3,0);
+  }
+  if (ps2x.ButtonPressed(PSB_PAD_DOWN)){
+    digitalWrite(A2,0);
+    digitalWrite(A3,1);
+  }
+  if (ps2x.ButtonReleased(PSB_PAD_DOWN)){
+    digitalWrite(A2,0);
+    digitalWrite(A3,0);
+  }
+  
   if (ps2x.ButtonPressed(PSB_L1))
   {
     digitalWrite(A0,1);
@@ -141,12 +159,12 @@ void motorControl() {
   }
   if (ps2x.ButtonPressed(PSB_R1))
   {
-    digitalWrite(A1,1);
     digitalWrite(A0,0);
+    digitalWrite(A1,1);
   } 
   if (ps2x.ButtonReleased(PSB_R1))
   {
-    digitalWrite(A1,0);
     digitalWrite(A0,0);
+    digitalWrite(A1,0);
   }
 }  
