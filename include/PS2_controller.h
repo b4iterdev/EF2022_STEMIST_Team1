@@ -9,6 +9,7 @@
 #define IN2_B 8
 #define EN_B 9
 
+bool servoState = 0;
 PS2X ps2x; // create PS2 Controller Class
 
 /******************************************************************
@@ -133,28 +134,35 @@ void motorControl() {
   if (ps2x.ButtonPressed(PSB_PAD_UP)) {
     digitalWrite(A2,1);
     digitalWrite(A3,0);
+    digitalWrite(2,1);
+    digitalWrite(4,0);
+    analogWrite(A4,240);
+    analogWrite(A5,240);
   }
   if (ps2x.ButtonReleased(PSB_PAD_UP)){
     digitalWrite(A2,0);
     digitalWrite(A3,0);
+    digitalWrite(2,0);
+    digitalWrite(4,0);
   }
   if (ps2x.ButtonPressed(PSB_PAD_DOWN)){
     digitalWrite(A2,0);
     digitalWrite(A3,1);
+    digitalWrite(2,0);
+    digitalWrite(4,1);
+    analogWrite(A4,240);
+    analogWrite(A5,240);
   }
   if (ps2x.ButtonReleased(PSB_PAD_DOWN)){
     digitalWrite(A2,0);
     digitalWrite(A3,0);
+    digitalWrite(2,0);
+    digitalWrite(4,0);
   }
-  
+  //Continious Motor.
   if (ps2x.ButtonPressed(PSB_L1))
   {
     digitalWrite(A0,1);
-    digitalWrite(A1,0);
-  } 
-  if (ps2x.ButtonReleased(PSB_L1))
-  {
-    digitalWrite(A0,0);
     digitalWrite(A1,0);
   }
   if (ps2x.ButtonPressed(PSB_R1))
@@ -162,9 +170,32 @@ void motorControl() {
     digitalWrite(A0,0);
     digitalWrite(A1,1);
   } 
-  if (ps2x.ButtonReleased(PSB_R1))
-  {
+  if(ps2x.ButtonPressed(PSB_L2)) {
     digitalWrite(A0,0);
     digitalWrite(A1,0);
   }
-}  
+} 
+void servo_pwm(int x, int pin){
+  int val = (x*10.25)+500;
+  digitalWrite(pin,HIGH);
+  delayMicroseconds(val);
+  digitalWrite(pin,LOW);
+  delay(10);
+}
+void servoControl() {
+  if(ps2x.ButtonPressed(PSB_CIRCLE))
+  {
+    servoState = 0;
+  } if (ps2x.ButtonPressed(PSB_CROSS))
+  {
+    servoState = 1;
+  }
+  if (servoState == 0)
+  {
+    servo_pwm(0,A4);
+  }
+  if (servoState == 1)
+  {
+    servo_pwm(90,A4);
+  }
+}
