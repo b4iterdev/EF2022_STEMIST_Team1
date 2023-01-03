@@ -8,6 +8,7 @@ void setup(){
 }
 
 void loop() {
+  ps2x.read_gamepad(false,0);
   PS2control();
   motorControl();
 }

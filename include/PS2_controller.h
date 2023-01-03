@@ -44,8 +44,6 @@ void setupPS2controller()
 }
 void PS2control()
 {
-    ps2x.read_gamepad(false,0);
-
     int nJoyX = ps2x.Analog(PSS_RX); // read x-joystick
     int nJoyY = ps2x.Analog(PSS_LY); // read y-joystick
     
